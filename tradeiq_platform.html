@@ -1,0 +1,1042 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#0A0E1A;--bg2:#0F1525;--bg3:#141B2D;--bg4:#1A2235;
+    --card:#111827;--card2:#162032;
+    --border:#1E2D45;--border2:#243350;
+    --text:#F0F4FF;--text2:#8DA0BE;--text3:#506070;
+    --gold:#F5A623;--gold2:#FFB84D;--goldfaint:rgba(245,166,35,0.1);
+    --green:#00D68F;--greenfaint:rgba(0,214,143,0.1);
+    --red:#FF4757;--redfaint:rgba(255,71,87,0.1);
+    --blue:#3D8EFF;--bluefaint:rgba(61,142,255,0.1);
+    --accent:#00D68F;
+  }
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden}
+  h1,h2,h3,h4,h5{font-family:'Syne',sans-serif}
+
+  /* NAV */
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,14,26,0.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between}
+  .nav-logo{display:flex;align-items:center;gap:10px;cursor:pointer}
+  .logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--gold),var(--green));border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:#0A0E1A}
+  .logo-text{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;color:var(--text);letter-spacing:-0.5px}
+  .logo-text span{color:var(--gold)}
+  .nav-links{display:flex;align-items:center;gap:2rem}
+  .nav-links a{color:var(--text2);text-decoration:none;font-size:14px;font-weight:500;transition:.2s;cursor:pointer}
+  .nav-links a:hover{color:var(--text)}
+  .nav-links a.active{color:var(--gold)}
+  .nav-right{display:flex;align-items:center;gap:12px}
+  .btn{padding:8px 20px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;transition:.2s;border:none;font-family:'DM Sans',sans-serif}
+  .btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border2)}
+  .btn-ghost:hover{color:var(--text);border-color:var(--text3)}
+  .btn-primary{background:linear-gradient(135deg,var(--gold),#E8941A);color:#0A0E1A;font-weight:600}
+  .btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(245,166,35,0.3)}
+  .btn-green{background:linear-gradient(135deg,var(--green),#00B87A);color:#0A0E1A;font-weight:600}
+  .btn-green:hover{transform:translateY(-1px)}
+
+  /* PAGES */
+  .page{display:none;padding-top:64px;min-height:100vh}
+  .page.active{display:block}
+
+  /* HERO */
+  .hero{padding:80px 2rem 60px;max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+  .hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--goldfaint);border:1px solid rgba(245,166,35,0.25);border-radius:20px;padding:6px 16px;font-size:12px;font-weight:600;color:var(--gold);margin-bottom:24px;letter-spacing:.5px;text-transform:uppercase}
+  .hero h1{font-size:clamp(36px,4vw,56px);font-weight:800;line-height:1.1;letter-spacing:-1.5px;margin-bottom:20px}
+  .hero h1 .highlight{background:linear-gradient(135deg,var(--gold),var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .hero p{color:var(--text2);font-size:17px;line-height:1.7;margin-bottom:32px;max-width:480px}
+  .hero-cta{display:flex;gap:12px;flex-wrap:wrap}
+  .hero-stats{display:flex;gap:32px;margin-top:48px;padding-top:32px;border-top:1px solid var(--border)}
+  .stat-item{text-align:left}
+  .stat-num{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--text)}
+  .stat-num span{color:var(--gold)}
+  .stat-label{font-size:12px;color:var(--text3);font-weight:500;letter-spacing:.3px}
+
+  /* CHART VISUAL */
+  .hero-visual{position:relative}
+  .chart-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;position:relative;overflow:hidden}
+  .chart-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+  .chart-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+  .chart-title{font-family:'Syne',sans-serif;font-weight:700;font-size:14px}
+  .price-badge{display:flex;align-items:center;gap:6px;background:var(--greenfaint);border:1px solid rgba(0,214,143,0.2);border-radius:8px;padding:4px 10px;font-size:13px;font-weight:600;color:var(--green)}
+  .chart-svg{width:100%;height:160px}
+  .mini-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+  .mini-stat{background:var(--bg3);border-radius:10px;padding:12px;text-align:center}
+  .mini-stat-val{font-family:'Syne',sans-serif;font-size:16px;font-weight:700}
+  .mini-stat-val.up{color:var(--green)}
+  .mini-stat-val.down{color:var(--red)}
+  .mini-stat-lbl{font-size:11px;color:var(--text3);margin-top:2px}
+  .floating-badge{position:absolute;background:var(--card2);border:1px solid var(--border2);border-radius:12px;padding:10px 14px;font-size:12px;font-weight:500;white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,0.3)}
+  .fb-1{top:-16px;right:20px;color:var(--green)}
+  .fb-2{bottom:80px;left:-20px;color:var(--gold)}
+
+  /* SECTIONS */
+  .section{padding:80px 2rem;max-width:1200px;margin:0 auto}
+  .section-tag{display:inline-block;background:var(--goldfaint);border:1px solid rgba(245,166,35,0.2);border-radius:20px;padding:4px 14px;font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.8px;text-transform:uppercase;margin-bottom:12px}
+  .section-title{font-size:clamp(28px,3vw,40px);font-weight:800;letter-spacing:-1px;margin-bottom:12px;line-height:1.15}
+  .section-sub{color:var(--text2);font-size:16px;max-width:500px;margin-bottom:48px}
+
+  /* COURSES GRID */
+  .courses-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+  .course-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:.3s;cursor:pointer;position:relative}
+  .course-card:hover{transform:translateY(-4px);border-color:var(--border2);box-shadow:0 20px 40px rgba(0,0,0,0.4)}
+  .course-thumb{height:140px;display:flex;align-items:center;justify-content:center;font-size:48px;position:relative}
+  .course-thumb.forex{background:linear-gradient(135deg,#0F2A1E,#1A3D2B)}
+  .course-thumb.crypto{background:linear-gradient(135deg,#1A1A0F,#2D2A0F)}
+  .course-thumb.stocks{background:linear-gradient(135deg,#0F1A2A,#0F2035)}
+  .course-thumb.options{background:linear-gradient(135deg,#2A0F1A,#3D1A28)}
+  .level-tag{position:absolute;top:12px;left:12px;border-radius:6px;padding:3px 10px;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+  .beginner{background:var(--greenfaint);color:var(--green);border:1px solid rgba(0,214,143,0.3)}
+  .intermediate{background:rgba(61,142,255,0.1);color:var(--blue);border:1px solid rgba(61,142,255,0.3)}
+  .advanced{background:rgba(255,71,87,0.1);color:var(--red);border:1px solid rgba(255,71,87,0.3)}
+  .course-body{padding:20px}
+  .course-cat{font-size:11px;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+  .course-title{font-family:'Syne',sans-serif;font-weight:700;font-size:17px;margin-bottom:8px;line-height:1.3}
+  .course-desc{font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:16px}
+  .course-meta{display:flex;align-items:center;justify-content:space-between}
+  .course-info{display:flex;gap:12px;font-size:12px;color:var(--text3)}
+  .course-info span{display:flex;align-items:center;gap:4px}
+  .course-price{font-family:'Syne',sans-serif;font-weight:700;font-size:16px;color:var(--gold)}
+  .course-price.free{color:var(--green)}
+  .stars{color:var(--gold);font-size:12px;letter-spacing:-1px}
+
+  /* FEATURES */
+  .features-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}
+  .feature-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;transition:.3s}
+  .feature-card:hover{border-color:var(--border2);transform:translateY(-2px)}
+  .feature-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:20px}
+  .fi-gold{background:var(--goldfaint);border:1px solid rgba(245,166,35,0.2)}
+  .fi-green{background:var(--greenfaint);border:1px solid rgba(0,214,143,0.2)}
+  .fi-blue{background:var(--bluefaint);border:1px solid rgba(61,142,255,0.2)}
+  .fi-red{background:var(--redfaint);border:1px solid rgba(255,71,87,0.2)}
+  .feature-card h4{font-family:'Syne',sans-serif;font-weight:700;font-size:16px;margin-bottom:8px}
+  .feature-card p{font-size:13px;color:var(--text2);line-height:1.6}
+
+  /* LESSON PAGE */
+  .lesson-layout{display:grid;grid-template-columns:280px 1fr 300px;gap:0;min-height:calc(100vh - 64px)}
+  .lesson-sidebar{background:var(--card);border-right:1px solid var(--border);padding:24px 0;overflow-y:auto}
+  .sidebar-title{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;padding:0 20px 16px;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);margin-bottom:8px}
+  .lesson-item{padding:10px 20px;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:12px;font-size:13px}
+  .lesson-item:hover{background:var(--bg3)}
+  .lesson-item.active{background:var(--goldfaint);border-left:2px solid var(--gold);color:var(--gold)}
+  .lesson-item.done .lesson-check{background:var(--green)}
+  .lesson-check{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0;transition:.2s}
+  .lesson-item.done .lesson-check{border-color:var(--green);background:var(--greenfaint);color:var(--green)}
+  .lesson-item.active .lesson-check{border-color:var(--gold);color:var(--gold)}
+  .lesson-content{padding:40px;overflow-y:auto;background:var(--bg)}
+  .lesson-panel{background:var(--card);border-left:1px solid var(--border);padding:24px;overflow-y:auto}
+
+  /* VIDEO PLAYER */
+  .video-player{background:var(--bg3);border-radius:16px;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;margin-bottom:32px;border:1px solid var(--border);position:relative;overflow:hidden;cursor:pointer}
+  .video-player:hover .play-btn{transform:scale(1.1)}
+  .play-btn{width:64px;height:64px;background:linear-gradient(135deg,var(--gold),#E8941A);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;transition:.2s;color:#0A0E1A;font-weight:bold}
+  .video-title{font-family:'Syne',sans-serif;font-weight:800;font-size:26px;margin-bottom:16px;line-height:1.2}
+  .content-body{font-size:15px;color:var(--text2);line-height:1.8}
+  .content-body p{margin-bottom:16px}
+  .content-body h3{font-family:'Syne',sans-serif;color:var(--text);font-size:18px;font-weight:700;margin:28px 0 12px}
+  .callout{background:var(--goldfaint);border:1px solid rgba(245,166,35,0.2);border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:16px 20px;margin:20px 0;font-size:14px;color:var(--text2)}
+  .callout strong{color:var(--gold)}
+
+  /* QUIZ */
+  .quiz-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;margin-top:40px}
+  .quiz-q{font-family:'Syne',sans-serif;font-weight:700;font-size:16px;margin-bottom:20px}
+  .quiz-options{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+  .quiz-opt{background:var(--bg3);border:1.5px solid var(--border);border-radius:10px;padding:12px 16px;cursor:pointer;font-size:14px;transition:.2s;text-align:left}
+  .quiz-opt:hover{border-color:var(--gold);color:var(--gold);background:var(--goldfaint)}
+  .quiz-opt.correct{border-color:var(--green);background:var(--greenfaint);color:var(--green)}
+  .quiz-opt.wrong{border-color:var(--red);background:var(--redfaint);color:var(--red)}
+
+  /* PROGRESS */
+  .progress-bar{background:var(--bg3);border-radius:20px;height:6px;overflow:hidden;margin-bottom:4px}
+  .progress-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--gold),var(--green));transition:.5s}
+
+  /* DASHBOARD */
+  .dashboard{padding:40px 2rem;max-width:1200px;margin:0 auto}
+  .dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px}
+  .dash-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;position:relative;overflow:hidden}
+  .dash-card::after{content:'';position:absolute;right:-20px;top:-20px;width:80px;height:80px;border-radius:50%;opacity:.05}
+  .dash-num{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;margin-bottom:4px}
+  .dash-lbl{font-size:13px;color:var(--text2)}
+  .dash-change{font-size:12px;font-weight:600;margin-top:8px}
+  .dash-change.up{color:var(--green)}
+  .dash-change.down{color:var(--red)}
+  .dash-icon{position:absolute;top:20px;right:20px;width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px}
+
+  /* BLOG */
+  .blog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:24px}
+  .blog-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;cursor:pointer;transition:.3s}
+  .blog-card:hover{transform:translateY(-4px);border-color:var(--border2)}
+  .blog-img{height:160px;display:flex;align-items:center;justify-content:center;font-size:40px}
+  .blog-img.forex{background:linear-gradient(135deg,#0A1A12,#0F2A1E)}
+  .blog-img.crypto{background:linear-gradient(135deg,#1A150A,#2A200A)}
+  .blog-img.stocks{background:linear-gradient(135deg,#0A0F1A,#0A1525)}
+  .blog-body{padding:20px}
+  .blog-tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--gold);margin-bottom:8px}
+  .blog-title{font-family:'Syne',sans-serif;font-weight:700;font-size:17px;margin-bottom:10px;line-height:1.35}
+  .blog-excerpt{font-size:13px;color:var(--text2);line-height:1.55;margin-bottom:16px}
+  .blog-meta{font-size:12px;color:var(--text3);display:flex;gap:12px}
+
+  /* AD BANNER */
+  .ad-banner{background:var(--card2);border:1px dashed var(--border2);border-radius:12px;padding:20px;text-align:center;margin:24px 0;font-size:12px;color:var(--text3);letter-spacing:.5px}
+  .ad-banner-sm{height:80px;display:flex;align-items:center;justify-content:center}
+  .ad-sidebar{min-height:200px;display:flex;align-items:center;justify-content:center}
+
+  /* TABS */
+  .tabs{display:flex;gap:4px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:4px;margin-bottom:32px;width:fit-content}
+  .tab{padding:8px 20px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:.2s;color:var(--text2)}
+  .tab.active{background:linear-gradient(135deg,var(--gold),#E8941A);color:#0A0E1A}
+  .tab:hover:not(.active){background:var(--bg3);color:var(--text)}
+
+  /* SEARCH */
+  .search-bar{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:12px;margin-bottom:32px;width:100%}
+  .search-bar input{background:none;border:none;outline:none;color:var(--text);font-size:15px;font-family:'DM Sans',sans-serif;flex:1}
+  .search-bar input::placeholder{color:var(--text3)}
+
+  /* TICKER */
+  .ticker{background:var(--bg2);border-bottom:1px solid var(--border);overflow:hidden;height:36px;display:flex;align-items:center}
+  .ticker-inner{display:flex;gap:40px;animation:ticker 30s linear infinite;white-space:nowrap;padding:0 20px}
+  @keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+  .tick-item{font-size:12px;font-weight:500;display:flex;align-items:center;gap:8px}
+  .tick-name{color:var(--text2)}
+  .tick-price{color:var(--text);font-family:'Syne',sans-serif}
+  .tick-change{font-size:11px;font-weight:600}
+  .tick-up{color:var(--green)}
+  .tick-down{color:var(--red)}
+
+  /* TESTIMONIALS */
+  .testimonials{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .testi-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px}
+  .testi-stars{color:var(--gold);font-size:14px;margin-bottom:12px}
+  .testi-text{font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:20px;font-style:italic}
+  .testi-author{display:flex;align-items:center;gap:12px}
+  .testi-avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:#0A0E1A}
+  .testi-name{font-weight:600;font-size:14px}
+  .testi-role{font-size:12px;color:var(--text3)}
+
+  /* PRICING */
+  .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .price-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:32px;position:relative}
+  .price-card.featured{border-color:var(--gold);background:var(--card2)}
+  .price-card.featured::before{content:'Most Popular';position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--gold),#E8941A);color:#0A0E1A;font-size:11px;font-weight:700;padding:4px 14px;border-radius:20px;letter-spacing:.5px;white-space:nowrap}
+  .price-name{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;margin-bottom:8px}
+  .price-amount{font-family:'Syne',sans-serif;font-size:42px;font-weight:800;margin:16px 0 4px;line-height:1}
+  .price-amount sup{font-size:20px;vertical-align:top;margin-top:8px;display:inline-block}
+  .price-amount span{font-size:15px;color:var(--text2);font-weight:400;font-family:'DM Sans',sans-serif}
+  .price-desc{font-size:13px;color:var(--text2);margin-bottom:24px}
+  .price-features{list-style:none;margin-bottom:28px}
+  .price-features li{font-size:14px;padding:8px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;color:var(--text2)}
+  .price-features li::before{content:'✓';color:var(--green);font-weight:700;font-size:12px}
+
+  /* CONTACT */
+  .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+  .contact-form{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:32px}
+  .form-group{margin-bottom:20px}
+  .form-group label{display:block;font-size:13px;font-weight:600;color:var(--text2);margin-bottom:8px;letter-spacing:.3px}
+  .form-input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px 16px;color:var(--text);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:.2s}
+  .form-input:focus{border-color:var(--gold)}
+  textarea.form-input{resize:vertical;min-height:120px}
+
+  /* FOOTER */
+  footer{background:var(--bg2);border-top:1px solid var(--border);padding:60px 2rem 32px;margin-top:80px}
+  .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;max-width:1200px;margin:0 auto 40px}
+  .footer-brand p{font-size:14px;color:var(--text2);margin-top:12px;max-width:280px;line-height:1.6}
+  .footer-col h5{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);margin-bottom:16px}
+  .footer-col a{display:block;color:var(--text2);text-decoration:none;font-size:14px;margin-bottom:10px;transition:.2s;cursor:pointer}
+  .footer-col a:hover{color:var(--gold)}
+  .footer-bottom{max-width:1200px;margin:0 auto;padding-top:24px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--text3)}
+  .social-links{display:flex;gap:12px}
+  .social-btn{width:36px;height:36px;background:var(--card);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;transition:.2s}
+  .social-btn:hover{border-color:var(--gold);color:var(--gold)}
+
+  /* ABOUT */
+  .about-hero{background:linear-gradient(135deg,var(--bg2),var(--bg3));padding:80px 2rem;text-align:center;position:relative;overflow:hidden}
+  .about-hero::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse at center,rgba(245,166,35,0.05) 0%,transparent 70%)}
+  .team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+  .team-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;text-align:center}
+  .team-avatar{width:72px;height:72px;border-radius:50%;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:24px;color:#0A0E1A}
+  .team-name{font-family:'Syne',sans-serif;font-weight:700;font-size:16px;margin-bottom:4px}
+  .team-role{font-size:13px;color:var(--text2)}
+
+  /* ANIMATIONS */
+  @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+  .fade-up{animation:fadeUp .5s ease forwards}
+
+  /* RESPONSIVE */
+  @media(max-width:900px){
+    .hero{grid-template-columns:1fr;gap:40px}
+    .hero-visual{display:none}
+    .lesson-layout{grid-template-columns:1fr;grid-template-rows:auto 1fr auto}
+    .lesson-sidebar,.lesson-panel{display:none}
+    .dash-grid{grid-template-columns:repeat(2,1fr)}
+    .pricing-grid{grid-template-columns:1fr}
+    .contact-grid{grid-template-columns:1fr}
+    .team-grid{grid-template-columns:repeat(2,1fr)}
+    .testimonials{grid-template-columns:1fr}
+    .footer-grid{grid-template-columns:1fr 1fr}
+    .nav-links{display:none}
+  }
+</style>
+
+<h2 class="sr-only">TradeIQ — Online Trading Education Platform</h2>
+
+<!-- TICKER -->
+<div class="ticker" id="tickerBar">
+  <div class="ticker-inner" id="tickerInner"></div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="showPage('home')">
+    <div class="logo-icon">TQ</div>
+    <div class="logo-text">Trade<span>IQ</span></div>
+  </div>
+  <div class="nav-links">
+    <a onclick="showPage('home')" id="nav-home" class="active">Home</a>
+    <a onclick="showPage('courses')" id="nav-courses">Courses</a>
+    <a onclick="showPage('blog')" id="nav-blog">Blog</a>
+    <a onclick="showPage('pricing')" id="nav-pricing">Pricing</a>
+    <a onclick="showPage('about')" id="nav-about">About</a>
+    <a onclick="showPage('contact')" id="nav-contact">Contact</a>
+  </div>
+  <div class="nav-right">
+    <button class="btn btn-ghost" onclick="showPage('dashboard')">Dashboard</button>
+    <button class="btn btn-primary" onclick="showPage('pricing')">Get Started</button>
+  </div>
+</nav>
+
+<!-- HOME PAGE -->
+<div id="page-home" class="page active">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-text fade-up">
+      <div class="hero-badge">🏆 #1 Trading Education Platform</div>
+      <h1>Master the Art of <span class="highlight">Smart Trading</span></h1>
+      <p>From complete beginner to confident trader. Learn Forex, Crypto, and Stocks with expert-led courses, real-world strategies, and live market analysis.</p>
+      <div class="hero-cta">
+        <button class="btn btn-primary" style="padding:12px 28px;font-size:15px" onclick="showPage('courses')">Explore Courses →</button>
+        <button class="btn btn-ghost" style="padding:12px 28px;font-size:15px" onclick="showPage('lesson')">Watch Free Lesson</button>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-num">47<span>K+</span></div>
+          <div class="stat-label">Active Students</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">120<span>+</span></div>
+          <div class="stat-label">Expert Lessons</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">4.9<span>★</span></div>
+          <div class="stat-label">Average Rating</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual fade-up" style="animation-delay:.2s">
+      <div class="floating-badge fb-1">📈 EUR/USD +0.82% today</div>
+      <div class="floating-badge fb-2">🎓 1,247 students enrolled today</div>
+      <div class="chart-card">
+        <div class="chart-header">
+          <span class="chart-title">EUR/USD Live</span>
+          <div class="price-badge">▲ 1.0847 +0.82%</div>
+        </div>
+        <svg class="chart-svg" viewBox="0 0 400 160" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#00D68F" stop-opacity=".3"/>
+              <stop offset="100%" stop-color="#00D68F" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="M0,120 L20,110 L40,115 L60,100 L80,95 L100,105 L120,90 L140,85 L160,80 L180,95 L200,75 L220,65 L240,70 L260,55 L280,60 L300,45 L320,50 L340,35 L360,40 L380,30 L400,25 L400,160 L0,160 Z" fill="url(#cg)"/>
+          <path d="M0,120 L20,110 L40,115 L60,100 L80,95 L100,105 L120,90 L140,85 L160,80 L180,95 L200,75 L220,65 L240,70 L260,55 L280,60 L300,45 L320,50 L340,35 L360,40 L380,30 L400,25" fill="none" stroke="#00D68F" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <div class="mini-stats">
+          <div class="mini-stat"><div class="mini-stat-val up">+2.4%</div><div class="mini-stat-lbl">Weekly</div></div>
+          <div class="mini-stat"><div class="mini-stat-val up">+8.7%</div><div class="mini-stat-lbl">Monthly</div></div>
+          <div class="mini-stat"><div class="mini-stat-val down">-1.2%</div><div class="mini-stat-lbl">Yesterday</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AD BANNER -->
+  <div style="max-width:1200px;margin:0 auto;padding:0 2rem">
+    <div class="ad-banner ad-banner-sm">ADVERTISEMENT · Google AdSense Banner (728×90)</div>
+  </div>
+
+  <!-- FEATURES -->
+  <div class="section">
+    <div class="section-tag">Why TradeIQ</div>
+    <h2 class="section-title">Everything you need to trade<br>with confidence</h2>
+    <p class="section-sub">We've designed the most complete trading education experience for all skill levels.</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon fi-gold">📊</div>
+        <h4>Live Chart Analysis</h4>
+        <p>Learn directly on real charts with interactive tools and live market data integrated into every lesson.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon fi-green">🎯</div>
+        <h4>Structured Learning Paths</h4>
+        <p>Follow guided paths from beginner fundamentals to advanced strategies, with clear milestones and quizzes.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon fi-blue">💬</div>
+        <h4>Expert Community</h4>
+        <p>Connect with traders, ask questions, and get feedback from our community of 47,000+ active members.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon fi-red">🏅</div>
+        <h4>Verified Certificates</h4>
+        <p>Earn industry-recognized certificates upon completing each course — boost your trading credentials.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon fi-gold">📱</div>
+        <h4>Learn Anywhere</h4>
+        <p>Full mobile experience — access all lessons, quizzes, and your progress dashboard from any device.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon fi-green">🔄</div>
+        <h4>Always Updated</h4>
+        <p>Courses updated monthly to reflect current market conditions, regulations, and trading strategies.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURED COURSES -->
+  <div class="section" style="padding-top:0">
+    <div class="section-tag">Featured Courses</div>
+    <h2 class="section-title">Start your trading journey</h2>
+    <p class="section-sub">Handpicked courses for every level — from reading your first candlestick to advanced strategy systems.</p>
+
+    <div class="tabs">
+      <div class="tab active" onclick="filterTab(this,'all')">All</div>
+      <div class="tab" onclick="filterTab(this,'forex')">Forex</div>
+      <div class="tab" onclick="filterTab(this,'crypto')">Crypto</div>
+      <div class="tab" onclick="filterTab(this,'stocks')">Stocks</div>
+    </div>
+
+    <div class="courses-grid" id="homeCoursesGrid"></div>
+    <div style="text-align:center;margin-top:40px">
+      <button class="btn btn-ghost" style="padding:12px 32px;font-size:14px" onclick="showPage('courses')">View All Courses →</button>
+    </div>
+  </div>
+
+  <!-- TESTIMONIALS -->
+  <div class="section" style="background:var(--bg2);max-width:100%;padding:80px 2rem">
+    <div style="max-width:1200px;margin:0 auto">
+      <div class="section-tag">Student Stories</div>
+      <h2 class="section-title">Traders who changed their lives</h2>
+      <p class="section-sub" style="margin-bottom:40px">Join thousands of students who have transformed their trading careers with TradeIQ.</p>
+      <div class="testimonials">
+        <div class="testi-card">
+          <div class="testi-stars">★★★★★</div>
+          <div class="testi-text">"I went from losing money every week to consistently profitable in 3 months. The Forex fundamentals course completely changed my approach."</div>
+          <div class="testi-author">
+            <div class="testi-avatar" style="background:linear-gradient(135deg,var(--gold),#E8941A)">AK</div>
+            <div><div class="testi-name">Ahmed K.</div><div class="testi-role">Forex Trader, Dubai</div></div>
+          </div>
+        </div>
+        <div class="testi-card">
+          <div class="testi-stars">★★★★★</div>
+          <div class="testi-text">"The crypto course is unbelievably clear. Everything from DeFi to chart reading is explained in a way that actually makes sense for beginners."</div>
+          <div class="testi-author">
+            <div class="testi-avatar" style="background:linear-gradient(135deg,var(--green),#00B87A)">SM</div>
+            <div><div class="testi-name">Sarah M.</div><div class="testi-role">Crypto Investor, London</div></div>
+          </div>
+        </div>
+        <div class="testi-card">
+          <div class="testi-stars">★★★★★</div>
+          <div class="testi-text">"The quiz system and progress tracking keeps me motivated. I've completed 3 courses and my portfolio has grown over 40% since starting."</div>
+          <div class="testi-author">
+            <div class="testi-avatar" style="background:linear-gradient(135deg,var(--blue),#2A6FD4)">RJ</div>
+            <div><div class="testi-name">Raj J.</div><div class="testi-role">Stock Trader, Mumbai</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA SECTION -->
+  <div class="section" style="text-align:center;max-width:700px">
+    <div class="section-tag">Get Started Today</div>
+    <h2 class="section-title">Your trading journey starts here</h2>
+    <p class="section-sub" style="margin:0 auto 32px">Join 47,000+ traders who are already learning, earning, and growing with TradeIQ.</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-primary" style="padding:14px 32px;font-size:16px" onclick="showPage('pricing')">Start Free Trial →</button>
+      <button class="btn btn-ghost" style="padding:14px 32px;font-size:16px" onclick="showPage('courses')">Browse Courses</button>
+    </div>
+  </div>
+</div>
+
+<!-- COURSES PAGE -->
+<div id="page-courses" class="page">
+  <div class="section">
+    <div class="section-tag">All Courses</div>
+    <h2 class="section-title">Find your perfect course</h2>
+    <p class="section-sub">120+ lessons across Forex, Crypto, and Stocks — structured for every level.</p>
+
+    <div class="search-bar">
+      <span style="color:var(--text3);font-size:18px">🔍</span>
+      <input type="text" placeholder="Search courses..." id="courseSearch" oninput="searchCourses(this.value)">
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" onclick="filterCoursesPage(this,'all')">All Courses</div>
+      <div class="tab" onclick="filterCoursesPage(this,'beginner')">Beginner</div>
+      <div class="tab" onclick="filterCoursesPage(this,'intermediate')">Intermediate</div>
+      <div class="tab" onclick="filterCoursesPage(this,'advanced')">Advanced</div>
+    </div>
+
+    <!-- AD -->
+    <div class="ad-banner ad-banner-sm" style="margin-bottom:24px">ADVERTISEMENT · Google AdSense (728×90)</div>
+
+    <div class="courses-grid" id="allCoursesGrid"></div>
+  </div>
+</div>
+
+<!-- LESSON PAGE -->
+<div id="page-lesson" class="page">
+  <div class="lesson-layout">
+    <div class="lesson-sidebar">
+      <div class="sidebar-title">Course Contents</div>
+      <div id="lessonList"></div>
+    </div>
+    <div class="lesson-content">
+      <div class="video-player" onclick="this.style.background='var(--bg2)';this.innerHTML='<div style=\'text-align:center;color:var(--text2);font-size:14px\'>▶ Video playing...</div>'">
+        <div class="play-btn">▶</div>
+      </div>
+
+      <div class="video-title" id="lessonTitle">Introduction to Forex: Understanding Currency Pairs</div>
+
+      <div class="content-body">
+        <p>Welcome to the first lesson of the Forex Fundamentals course. In this lesson, we'll explore the foundational concept of currency pairs — the building blocks of every Forex trade.</p>
+        <h3>What is a Currency Pair?</h3>
+        <p>A currency pair is the quotation of two different currencies, where one is quoted against the other. For example, EUR/USD represents the Euro priced against the US Dollar. Every Forex trade involves simultaneously buying one currency and selling another.</p>
+        <div class="callout"><strong>💡 Key Concept:</strong> The first currency in a pair is the "base currency" and the second is the "quote currency." When EUR/USD = 1.0847, it means 1 Euro buys 1.0847 US Dollars.</div>
+        <h3>Major Currency Pairs</h3>
+        <p>The most traded pairs involve the US Dollar (USD) and are called "major pairs." These include EUR/USD, GBP/USD, USD/JPY, and USD/CHF. They offer the tightest spreads and highest liquidity — ideal for beginners to start with.</p>
+        <p>Minor pairs (or "crosses") don't include USD but involve major currencies like EUR/GBP or GBP/JPY. Exotic pairs combine a major currency with one from an emerging market, such as USD/TRY.</p>
+
+        <!-- AD between content -->
+        <div class="ad-banner" style="margin:32px 0"><div style="font-size:11px;margin-bottom:8px;color:var(--text3)">ADVERTISEMENT</div><div style="height:60px;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--text3)">Google AdSense In-Article Ad (336×280)</div></div>
+
+        <h3>Reading a Forex Quote</h3>
+        <p>Every currency pair has a bid price (what buyers pay) and an ask price (what sellers receive). The difference is the "spread" — this is how most Forex brokers make their profit. Tighter spreads mean lower trading costs for you.</p>
+      </div>
+
+      <!-- QUIZ -->
+      <div class="quiz-card">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
+          <div style="background:var(--goldfaint);border:1px solid rgba(245,166,35,0.2);border-radius:8px;padding:4px 12px;font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.5px;text-transform:uppercase">Lesson Quiz</div>
+          <span style="font-size:13px;color:var(--text3)">Test your knowledge</span>
+        </div>
+        <div class="quiz-q">In the pair EUR/USD, which currency is the base currency?</div>
+        <div class="quiz-options" id="quizOpts">
+          <button class="quiz-opt" onclick="answerQuiz(this, false)">A. USD — US Dollar</button>
+          <button class="quiz-opt" onclick="answerQuiz(this, true)">B. EUR — Euro</button>
+          <button class="quiz-opt" onclick="answerQuiz(this, false)">C. Both equally</button>
+          <button class="quiz-opt" onclick="answerQuiz(this, false)">D. Neither — it's a neutral pair</button>
+        </div>
+        <div id="quizResult" style="display:none;padding:12px 16px;border-radius:10px;font-size:14px;font-weight:500"></div>
+        <button class="btn btn-primary" style="margin-top:16px;width:100%;padding:12px" onclick="showPage('lesson')">Next Lesson →</button>
+      </div>
+    </div>
+    <div class="lesson-panel">
+      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.5px;color:var(--text3);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)">Your Progress</div>
+      <div style="margin-bottom:20px">
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span>Forex Fundamentals</span><span style="color:var(--gold);font-weight:600">35%</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:35%"></div></div>
+      </div>
+      <div style="margin-bottom:32px">
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span>Crypto Basics</span><span style="color:var(--green);font-weight:600">72%</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:72%"></div></div>
+      </div>
+
+      <!-- Sidebar AD -->
+      <div class="ad-banner ad-sidebar" style="margin-bottom:20px"><div><div style="font-size:10px;margin-bottom:4px;color:var(--text3)">ADVERTISEMENT</div><div style="font-size:12px;color:var(--text3)">AdSense Sidebar<br>(300×250)</div></div></div>
+
+      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.5px;color:var(--text3);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)">Bookmarks</div>
+      <div style="font-size:13px;color:var(--text3);text-align:center;padding:16px 0">No bookmarks yet.<br><span style="color:var(--blue);cursor:pointer">+ Add current lesson</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- BLOG PAGE -->
+<div id="page-blog" class="page">
+  <div class="section">
+    <div class="section-tag">Trading Blog</div>
+    <h2 class="section-title">Market insights & trading guides</h2>
+    <p class="section-sub">Expert articles to keep you informed and improve your trading edge.</p>
+
+    <div class="ad-banner ad-banner-sm" style="margin-bottom:32px">ADVERTISEMENT · Google AdSense (728×90)</div>
+
+    <div class="blog-grid" id="blogGrid"></div>
+  </div>
+</div>
+
+<!-- PRICING PAGE -->
+<div id="page-pricing" class="page">
+  <div class="section">
+    <div class="section-tag">Pricing</div>
+    <h2 class="section-title">Simple, transparent pricing</h2>
+    <p class="section-sub">Start free, upgrade when you're ready. No hidden fees, cancel anytime.</p>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="price-name">Free</div>
+        <div style="font-size:13px;color:var(--text2);margin-bottom:16px">Perfect for beginners exploring trading</div>
+        <div class="price-amount">$<span style="color:var(--text)">0</span><span>/mo</span></div>
+        <div class="price-desc">Access introductory lessons and community.</div>
+        <ul class="price-features">
+          <li>5 free beginner lessons</li>
+          <li>Community forum access</li>
+          <li>Weekly market newsletter</li>
+          <li>Basic quiz system</li>
+        </ul>
+        <button class="btn btn-ghost" style="width:100%;padding:12px">Get Started Free</button>
+      </div>
+      <div class="price-card featured">
+        <div class="price-name">Pro</div>
+        <div style="font-size:13px;color:var(--text2);margin-bottom:16px">For serious traders ready to level up</div>
+        <div class="price-amount" style="color:var(--gold)">$<span>29</span><span style="color:var(--text2)">/mo</span></div>
+        <div class="price-desc">Full access to all courses and live tools.</div>
+        <ul class="price-features">
+          <li>All 120+ lessons unlocked</li>
+          <li>Live chart tools & indicators</li>
+          <li>Progress tracking & certificates</li>
+          <li>Priority community support</li>
+          <li>Monthly live webinars</li>
+          <li>Ad-free experience</li>
+        </ul>
+        <button class="btn btn-primary" style="width:100%;padding:12px">Start 7-Day Free Trial</button>
+      </div>
+      <div class="price-card">
+        <div class="price-name">Elite</div>
+        <div style="font-size:13px;color:var(--text2);margin-bottom:16px">For professionals and serious investors</div>
+        <div class="price-amount">$<span style="color:var(--text)">79</span><span>/mo</span></div>
+        <div class="price-desc">Everything in Pro, plus 1-on-1 mentoring.</div>
+        <ul class="price-features">
+          <li>Everything in Pro plan</li>
+          <li>Weekly 1-on-1 coaching calls</li>
+          <li>Private signals & alerts</li>
+          <li>Exclusive Elite community</li>
+          <li>Portfolio review sessions</li>
+          <li>Custom learning roadmap</li>
+        </ul>
+        <button class="btn btn-green" style="width:100%;padding:12px">Go Elite</button>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:32px;font-size:13px;color:var(--text3)">
+      🔒 Secure payment · 30-day money-back guarantee · Cancel anytime
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD PAGE -->
+<div id="page-dashboard" class="page">
+  <div class="dashboard">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:32px">
+      <div>
+        <h2 style="font-family:'Syne',sans-serif;font-weight:800;font-size:28px;margin-bottom:4px">Welcome back, Alex 👋</h2>
+        <p style="color:var(--text2);font-size:14px">Keep up the momentum — you're 35% through Forex Fundamentals</p>
+      </div>
+      <button class="btn btn-primary" onclick="showPage('lesson')">Continue Learning →</button>
+    </div>
+
+    <div class="dash-grid">
+      <div class="dash-card">
+        <div class="dash-icon fi-gold">📚</div>
+        <div class="dash-lbl">Courses Enrolled</div>
+        <div class="dash-num" style="color:var(--gold)">3</div>
+        <div class="dash-change up">↑ 1 new this month</div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-icon fi-green">✅</div>
+        <div class="dash-lbl">Lessons Completed</div>
+        <div class="dash-num" style="color:var(--green)">14</div>
+        <div class="dash-change up">↑ 4 this week</div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-icon fi-blue">🏅</div>
+        <div class="dash-lbl">Certificates Earned</div>
+        <div class="dash-num" style="color:var(--blue)">1</div>
+        <div class="dash-change" style="color:var(--text3)">Crypto Basics complete</div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-icon fi-gold">⚡</div>
+        <div class="dash-lbl">Day Streak</div>
+        <div class="dash-num" style="color:var(--gold)">7</div>
+        <div class="dash-change up">↑ Best streak yet!</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:24px">
+      <div class="dash-card">
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:16px;margin-bottom:20px">My Courses</div>
+        <div id="dashCourses"></div>
+      </div>
+      <div class="dash-card">
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:16px;margin-bottom:20px">Recent Activity</div>
+        <div id="recentActivity"></div>
+        <div style="margin-top:20px">
+          <div class="ad-banner ad-sidebar" style="min-height:160px"><div style="font-size:11px;color:var(--text3)">AdSense (300×250)</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT PAGE -->
+<div id="page-about" class="page">
+  <div class="about-hero">
+    <div class="section-tag">About TradeIQ</div>
+    <h1 style="font-size:clamp(32px,4vw,52px);font-weight:800;letter-spacing:-1.5px;margin-bottom:20px;max-width:700px;margin-left:auto;margin-right:auto">We're on a mission to democratize trading education</h1>
+    <p style="color:var(--text2);font-size:17px;max-width:600px;margin:0 auto">TradeIQ was founded in 2021 to give everyone — regardless of background — access to professional-grade trading education at an affordable price.</p>
+  </div>
+  <div class="section">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;margin-bottom:80px;align-items:center">
+      <div>
+        <div class="section-tag">Our Story</div>
+        <h2 class="section-title" style="margin-bottom:20px">Built by traders, for traders</h2>
+        <p style="color:var(--text2);font-size:15px;line-height:1.8;margin-bottom:16px">TradeIQ was born from frustration. Our founders — experienced Forex and stock traders — noticed that quality trading education was either too expensive, too complex, or too outdated.</p>
+        <p style="color:var(--text2);font-size:15px;line-height:1.8">So we built the platform we wished existed when we were starting out. Today, TradeIQ has helped over 47,000 students in 90+ countries learn to trade with confidence.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="dash-card" style="text-align:center;padding:28px">
+          <div class="dash-num" style="color:var(--gold);font-size:40px">47K+</div>
+          <div class="dash-lbl">Students Worldwide</div>
+        </div>
+        <div class="dash-card" style="text-align:center;padding:28px">
+          <div class="dash-num" style="color:var(--green);font-size:40px">90+</div>
+          <div class="dash-lbl">Countries Reached</div>
+        </div>
+        <div class="dash-card" style="text-align:center;padding:28px">
+          <div class="dash-num" style="color:var(--blue);font-size:40px">120+</div>
+          <div class="dash-lbl">Expert Lessons</div>
+        </div>
+        <div class="dash-card" style="text-align:center;padding:28px">
+          <div class="dash-num" style="color:var(--gold);font-size:40px">4.9★</div>
+          <div class="dash-lbl">Average Rating</div>
+        </div>
+      </div>
+    </div>
+    <div class="section-tag">Meet the Team</div>
+    <h2 class="section-title" style="margin-bottom:40px">The experts behind TradeIQ</h2>
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-avatar" style="background:linear-gradient(135deg,var(--gold),#E8941A)">JR</div>
+        <div class="team-name">James Reynolds</div>
+        <div class="team-role">Founder & Head of Forex</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:8px">15 years FX trading experience</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar" style="background:linear-gradient(135deg,var(--green),#00B87A)">MC</div>
+        <div class="team-name">Maria Chen</div>
+        <div class="team-role">Head of Crypto Education</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:8px">Early Bitcoin adopter, DeFi expert</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar" style="background:linear-gradient(135deg,var(--blue),#2A6FD4)">DK</div>
+        <div class="team-name">David Khan</div>
+        <div class="team-role">Head of Stock Market</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:8px">Former Goldman Sachs analyst</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar" style="background:linear-gradient(135deg,#C850C0,#9B27AF)">SA</div>
+        <div class="team-name">Sofia Almeida</div>
+        <div class="team-role">Head of Education Design</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:8px">EdTech specialist, 10 years exp.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT PAGE -->
+<div id="page-contact" class="page">
+  <div class="section">
+    <div class="section-tag">Contact Us</div>
+    <h2 class="section-title">Get in touch</h2>
+    <p class="section-sub">Have questions? We're here to help. Reach us anytime.</p>
+    <div class="contact-grid">
+      <div class="contact-form">
+        <h3 style="font-family:'Syne',sans-serif;font-weight:700;font-size:20px;margin-bottom:24px">Send us a message</h3>
+        <div class="form-group">
+          <label>Full Name</label>
+          <input class="form-input" type="text" placeholder="Your full name">
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input class="form-input" type="email" placeholder="your@email.com">
+        </div>
+        <div class="form-group">
+          <label>Subject</label>
+          <select class="form-input">
+            <option>Course enquiry</option>
+            <option>Technical support</option>
+            <option>Billing question</option>
+            <option>Partnership</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Message</label>
+          <textarea class="form-input" placeholder="How can we help you?"></textarea>
+        </div>
+        <button class="btn btn-primary" style="width:100%;padding:14px;font-size:15px" onclick="this.textContent='Message Sent! ✓';this.style.background='linear-gradient(135deg,var(--green),#00B87A)'">Send Message</button>
+      </div>
+      <div>
+        <div style="margin-bottom:32px">
+          <h3 style="font-family:'Syne',sans-serif;font-weight:700;font-size:20px;margin-bottom:20px">Contact Information</h3>
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <div style="display:flex;gap:16px;align-items:flex-start">
+              <div class="feature-icon fi-gold" style="width:40px;height:40px;flex-shrink:0">📧</div>
+              <div><div style="font-weight:600;font-size:14px;margin-bottom:2px">Email</div><div style="color:var(--text2);font-size:14px">support@tradeiq.com</div></div>
+            </div>
+            <div style="display:flex;gap:16px;align-items:flex-start">
+              <div class="feature-icon fi-green" style="width:40px;height:40px;flex-shrink:0">💬</div>
+              <div><div style="font-weight:600;font-size:14px;margin-bottom:2px">Live Chat</div><div style="color:var(--text2);font-size:14px">Available Mon–Fri, 9am–6pm UTC</div></div>
+            </div>
+            <div style="display:flex;gap:16px;align-items:flex-start">
+              <div class="feature-icon fi-blue" style="width:40px;height:40px;flex-shrink:0">🌍</div>
+              <div><div style="font-weight:600;font-size:14px;margin-bottom:2px">HQ</div><div style="color:var(--text2);font-size:14px">Dubai, United Arab Emirates</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="ad-banner ad-sidebar"><div style="font-size:11px;color:var(--text3)">AdSense (300×250)</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="nav-logo" style="margin-bottom:12px">
+        <div class="logo-icon">TQ</div>
+        <div class="logo-text">Trade<span>IQ</span></div>
+      </div>
+      <p>Professional trading education for everyone. From beginner to expert — learn Forex, Crypto, and Stocks with TradeIQ.</p>
+      <div class="social-links" style="margin-top:20px">
+        <div class="social-btn">𝕏</div>
+        <div class="social-btn">in</div>
+        <div class="social-btn">yt</div>
+        <div class="social-btn">tg</div>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h5>Platform</h5>
+      <a onclick="showPage('courses')">All Courses</a>
+      <a onclick="showPage('lesson')">Free Lessons</a>
+      <a onclick="showPage('pricing')">Pricing</a>
+      <a onclick="showPage('dashboard')">Dashboard</a>
+    </div>
+    <div class="footer-col">
+      <h5>Learn</h5>
+      <a>Forex Trading</a>
+      <a>Crypto Markets</a>
+      <a>Stock Market</a>
+      <a onclick="showPage('blog')">Trading Blog</a>
+    </div>
+    <div class="footer-col">
+      <h5>Company</h5>
+      <a onclick="showPage('about')">About Us</a>
+      <a onclick="showPage('contact')">Contact</a>
+      <a>Privacy Policy</a>
+      <a>Terms of Service</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 TradeIQ. All rights reserved.</span>
+    <span style="color:var(--text3)">⚠ Trading involves risk. Educational purposes only.</span>
+  </div>
+</footer>
+
+<script>
+const courses = [
+  {id:1,title:"Forex Fundamentals",cat:"Forex",level:"beginner",emoji:"💱",thumb:"forex",desc:"Master currency pairs, pip values, and the basics of the forex market from scratch.",lessons:12,duration:"6h",price:"Free",rating:"4.9"},
+  {id:2,title:"Crypto for Beginners",cat:"Crypto",level:"beginner",emoji:"₿",thumb:"crypto",desc:"Understand blockchain, wallets, and how to trade the top cryptocurrencies safely.",lessons:10,duration:"5h",price:"Free",rating:"4.8"},
+  {id:3,title:"Stock Market Essentials",cat:"Stocks",level:"beginner",emoji:"📈",thumb:"stocks",desc:"Learn how stocks work, how to read financial statements, and build a portfolio.",lessons:14,duration:"7h",price:"$29",rating:"4.9"},
+  {id:4,title:"Technical Analysis Mastery",cat:"Forex",level:"intermediate",emoji:"📊",thumb:"forex",desc:"Chart patterns, indicators, support/resistance, and candlestick psychology.",lessons:18,duration:"10h",price:"$29",rating:"4.9"},
+  {id:5,title:"DeFi & Web3 Trading",cat:"Crypto",level:"intermediate",emoji:"🔗",thumb:"crypto",desc:"Decentralized finance, liquidity pools, yield farming, and smart contract trading.",lessons:15,duration:"8h",price:"$29",rating:"4.7"},
+  {id:6,title:"Options Trading Strategies",cat:"Stocks",level:"advanced",emoji:"⚙️",thumb:"options",desc:"Calls, puts, spreads, and complex strategies for managing risk and maximizing returns.",lessons:20,duration:"12h",price:"$49",rating:"4.8"},
+];
+
+const blogs = [
+  {title:"5 Forex Patterns Every Beginner Must Know in 2025",cat:"Forex",emoji:"📊",thumb:"forex",excerpt:"The most profitable chart patterns explained with real examples from recent EUR/USD price action.",date:"Jan 15, 2025",read:"6 min read"},
+  {title:"Bitcoin Halving 2024: What It Means for Your Crypto Portfolio",cat:"Crypto",emoji:"₿",thumb:"crypto",excerpt:"A complete breakdown of the halving cycle, historical price patterns, and what traders should watch for.",date:"Jan 12, 2025",read:"8 min read"},
+  {title:"How to Pick Winning Stocks: A Beginner's Framework",cat:"Stocks",emoji:"📈",thumb:"stocks",excerpt:"We break down the exact screening process used by top investors to identify high-growth opportunities.",date:"Jan 10, 2025",read:"7 min read"},
+  {title:"Risk Management: The #1 Skill Profitable Traders Share",cat:"Forex",emoji:"🛡️",thumb:"forex",excerpt:"Position sizing, stop losses, and how to protect your capital while still maximizing your upside.",date:"Jan 8, 2025",read:"5 min read"},
+  {title:"Top 10 Crypto Coins to Watch in 2025",cat:"Crypto",emoji:"🚀",thumb:"crypto",excerpt:"Our research team's picks for the most promising crypto projects entering 2025, and why they stand out.",date:"Jan 5, 2025",read:"9 min read"},
+  {title:"The Psychology of Trading: Why Most Traders Fail",cat:"Stocks",emoji:"🧠",thumb:"stocks",excerpt:"Fear, greed, FOMO — how emotions destroy trading accounts and the proven techniques to stay disciplined.",date:"Jan 3, 2025",read:"6 min read"},
+];
+
+const lessons = [
+  {title:"Introduction to Forex",done:true},
+  {title:"Understanding Currency Pairs",done:true,active:true},
+  {title:"How Forex Markets Work",done:false},
+  {title:"Reading Forex Quotes",done:false},
+  {title:"Types of Orders",done:false},
+  {title:"Risk Management Basics",done:false},
+  {title:"Technical Analysis 101",done:false},
+  {title:"Your First Trade",done:false},
+];
+
+const tickers = [
+  {name:"EUR/USD",price:"1.0847",change:"+0.82%",up:true},
+  {name:"BTC/USD",price:"$67,420",change:"+2.14%",up:true},
+  {name:"GBP/USD",price:"1.2634",change:"-0.31%",up:false},
+  {name:"AAPL",price:"$189.22",change:"+0.95%",up:true},
+  {name:"ETH/USD",price:"$3,521",change:"+1.87%",up:true},
+  {name:"USD/JPY",price:"149.82",change:"+0.22%",up:true},
+  {name:"TSLA",price:"$248.50",change:"-1.43%",up:false},
+  {name:"XAU/USD",price:"$2,031",change:"+0.44%",up:true},
+  {name:"NVDA",price:"$620.40",change:"+3.21%",up:true},
+  {name:"USD/CHF",price:"0.8921",change:"-0.15%",up:false},
+];
+
+function buildTicker(){
+  const inner = document.getElementById('tickerInner');
+  let html = '';
+  const both = [...tickers,...tickers];
+  both.forEach(t=>{
+    html+=`<div class="tick-item"><span class="tick-name">${t.name}</span><span class="tick-price">${t.price}</span><span class="tick-change ${t.up?'tick-up':'tick-down'}">${t.change}</span></div>`;
+  });
+  inner.innerHTML = html;
+}
+
+function buildCourseCard(c){
+  return `<div class="course-card" onclick="showPage('lesson')" data-level="${c.level}" data-cat="${c.cat.toLowerCase()}">
+    <div class="course-thumb ${c.thumb}">
+      <div class="level-tag ${c.level}">${c.level}</div>
+      <span style="font-size:44px">${c.emoji}</span>
+    </div>
+    <div class="course-body">
+      <div class="course-cat">${c.cat}</div>
+      <div class="course-title">${c.title}</div>
+      <div class="course-desc">${c.desc}</div>
+      <div class="course-meta">
+        <div>
+          <div class="stars">★★★★★</div>
+          <div class="course-info" style="margin-top:4px"><span>📚 ${c.lessons} lessons</span><span>⏱ ${c.duration}</span></div>
+        </div>
+        <div class="course-price ${c.price==='Free'?'free':''}">${c.price}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function buildCourses(el, list){
+  el.innerHTML = list.map(buildCourseCard).join('');
+}
+
+function filterTab(el, cat){
+  document.querySelectorAll('.tabs .tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  const grid = document.getElementById('homeCoursesGrid');
+  const filtered = cat==='all' ? courses.slice(0,3) : courses.filter(c=>c.cat.toLowerCase()===cat).slice(0,3);
+  buildCourses(grid, filtered.length?filtered:courses.slice(0,3));
+}
+
+function filterCoursesPage(el, level){
+  document.querySelectorAll('#page-courses .tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  const grid = document.getElementById('allCoursesGrid');
+  const filtered = level==='all' ? courses : courses.filter(c=>c.level===level);
+  buildCourses(grid, filtered);
+}
+
+function searchCourses(val){
+  const grid = document.getElementById('allCoursesGrid');
+  const v = val.toLowerCase();
+  const filtered = v ? courses.filter(c=>c.title.toLowerCase().includes(v)||c.cat.toLowerCase().includes(v)) : courses;
+  buildCourses(grid, filtered);
+}
+
+function buildLessons(){
+  const list = document.getElementById('lessonList');
+  if(!list) return;
+  list.innerHTML = lessons.map(l=>`<div class="lesson-item ${l.done?'done':''} ${l.active?'active':''}">
+    <div class="lesson-check">${l.done?'✓':''}</div>
+    <span>${l.title}</span>
+  </div>`).join('');
+}
+
+function buildBlog(){
+  const grid = document.getElementById('blogGrid');
+  if(!grid) return;
+  grid.innerHTML = blogs.map(b=>`<div class="blog-card">
+    <div class="blog-img ${b.thumb}"><span>${b.emoji}</span></div>
+    <div class="blog-body">
+      <div class="blog-tag">${b.cat}</div>
+      <div class="blog-title">${b.title}</div>
+      <div class="blog-excerpt">${b.excerpt}</div>
+      <div class="blog-meta"><span>${b.date}</span><span>·</span><span>${b.read}</span></div>
+    </div>
+  </div>`).join('');
+}
+
+function buildDashboard(){
+  const dc = document.getElementById('dashCourses');
+  if(!dc) return;
+  const enrolled = courses.slice(0,3);
+  const progresses = [35, 72, 10];
+  dc.innerHTML = enrolled.map((c,i)=>`<div style="margin-bottom:20px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <div>
+        <div style="font-size:14px;font-weight:500">${c.title}</div>
+        <div style="font-size:12px;color:var(--text3)">${c.lessons} lessons · ${c.cat}</div>
+      </div>
+      <button class="btn btn-primary" style="padding:6px 14px;font-size:12px" onclick="showPage('lesson')">Continue</button>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" style="width:${progresses[i]}%"></div></div>
+    <div style="font-size:11px;color:var(--text3);margin-top:4px">${progresses[i]}% complete</div>
+  </div>`).join('');
+
+  const ra = document.getElementById('recentActivity');
+  if(!ra) return;
+  const activities = [
+    {icon:'✅',text:'Completed lesson: Currency Pairs',time:'2h ago'},
+    {icon:'🏅',text:'Earned: Crypto Basics Certificate',time:'Yesterday'},
+    {icon:'📝',text:'Passed quiz: Forex Basics',time:'2 days ago'},
+    {icon:'📌',text:'Bookmarked: Risk Management',time:'3 days ago'},
+  ];
+  ra.innerHTML = activities.map(a=>`<div style="display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)">
+    <span style="font-size:16px">${a.icon}</span>
+    <div style="flex:1"><div style="font-size:13px;margin-bottom:2px">${a.text}</div><div style="font-size:11px;color:var(--text3)">${a.time}</div></div>
+  </div>`).join('');
+}
+
+function answerQuiz(el, correct){
+  const opts = document.querySelectorAll('.quiz-opt');
+  opts.forEach(o=>o.disabled=true);
+  el.classList.add(correct?'correct':'wrong');
+  if(!correct){
+    opts[1].classList.add('correct');
+  }
+  const res = document.getElementById('quizResult');
+  res.style.display='block';
+  res.style.background = correct ? 'var(--greenfaint)' : 'var(--redfaint)';
+  res.style.border = correct ? '1px solid rgba(0,214,143,0.3)' : '1px solid rgba(255,71,87,0.3)';
+  res.style.color = correct ? 'var(--green)' : 'var(--red)';
+  res.textContent = correct ? '✓ Correct! The EUR (Euro) is always the base currency in EUR/USD.' : '✗ Not quite. EUR is the base currency — it comes first in the pair.';
+}
+
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active'));
+  const pg = document.getElementById('page-'+name);
+  if(pg) pg.classList.add('active');
+  const nav = document.getElementById('nav-'+name);
+  if(nav) nav.classList.add('active');
+  window.scrollTo(0,0);
+
+  if(name==='courses') buildCourses(document.getElementById('allCoursesGrid'), courses);
+  if(name==='lesson'){ buildLessons(); }
+  if(name==='blog') buildBlog();
+  if(name==='dashboard') buildDashboard();
+}
+
+buildTicker();
+buildCourses(document.getElementById('homeCoursesGrid'), courses.slice(0,3));
+</script>

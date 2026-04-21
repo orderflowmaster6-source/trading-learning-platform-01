@@ -1,0 +1,793 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0A0E1A;--bg2:#0F1525;--bg3:#141B2D;--bg4:#1A2235;
+  --card:#111827;--card2:#162032;
+  --border:#1E2D45;--border2:#243350;
+  --text:#F0F4FF;--text2:#8DA0BE;--text3:#506070;
+  --gold:#F5A623;--goldfaint:rgba(245,166,35,0.1);
+  --green:#00D68F;--greenfaint:rgba(0,214,143,0.1);
+  --red:#FF4757;--redfaint:rgba(255,71,87,0.1);
+  --blue:#3D8EFF;--bluefaint:rgba(61,142,255,0.1);
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+h1,h2,h3,h4{font-family:'Syne',sans-serif}
+.btn{padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:.2s;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{opacity:.85;transform:translateY(-1px)}
+.btn-gold{background:linear-gradient(135deg,var(--gold),#E8941A);color:#0A0E1A}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border2)}
+.btn-ghost:hover{color:var(--text);border-color:var(--text3)}
+.btn-red{background:var(--redfaint);color:var(--red);border:1px solid rgba(255,71,87,0.3)}
+.btn-green{background:var(--greenfaint);color:var(--green);border:1px solid rgba(0,214,143,0.3)}
+.btn-blue{background:var(--bluefaint);color:var(--blue);border:1px solid rgba(61,142,255,0.3)}
+.btn-sm{padding:5px 12px;font-size:12px}
+
+/* LAYOUT */
+.shell{display:flex;min-height:100vh}
+.sidebar{width:220px;background:var(--card);border-right:1px solid var(--border);padding:20px 0;flex-shrink:0;display:flex;flex-direction:column}
+.main{flex:1;overflow:hidden}
+.logo{display:flex;align-items:center;gap:10px;padding:0 16px 24px;border-bottom:1px solid var(--border);margin-bottom:12px}
+.logo-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--gold),var(--green));border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:12px;color:#0A0E1A;flex-shrink:0}
+.logo-text{font-family:'Syne',sans-serif;font-weight:800;font-size:17px}
+.logo-text span{color:var(--gold)}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;font-size:13px;font-weight:500;cursor:pointer;color:var(--text2);transition:.15s;border-left:2px solid transparent}
+.nav-item:hover{background:var(--bg3);color:var(--text)}
+.nav-item.active{background:var(--goldfaint);color:var(--gold);border-left-color:var(--gold)}
+.nav-icon{font-size:15px;width:18px;text-align:center}
+.nav-section{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);padding:16px 16px 6px}
+
+/* TOPBAR */
+.topbar{height:56px;background:var(--card);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px}
+.topbar-title{font-family:'Syne',sans-serif;font-weight:700;font-size:18px}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.3px}
+.badge-gold{background:var(--goldfaint);color:var(--gold);border:1px solid rgba(245,166,35,0.25)}
+
+/* PAGES */
+.page{display:none;padding:24px;height:calc(100vh - 56px);overflow-y:auto}
+.page.active{display:block}
+
+/* UPLOAD ZONE */
+.upload-zone{border:2px dashed var(--border2);border-radius:16px;padding:60px 32px;text-align:center;cursor:pointer;transition:.3s;background:var(--bg2);position:relative;overflow:hidden}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--gold);background:var(--goldfaint)}
+.upload-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.upload-icon{font-size:48px;margin-bottom:16px;display:block}
+.upload-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;margin-bottom:8px}
+.upload-sub{font-size:14px;color:var(--text2);margin-bottom:24px}
+.upload-formats{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.fmt-tag{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:3px 10px;font-size:11px;font-weight:600;color:var(--text3)}
+
+/* UPLOAD PROGRESS */
+.upload-progress-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-top:16px;display:none}
+.file-info{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.file-thumb{width:52px;height:52px;background:var(--bg3);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.file-name{font-weight:600;font-size:14px;margin-bottom:2px}
+.file-size{font-size:12px;color:var(--text3)}
+.prog-bar{background:var(--bg3);border-radius:20px;height:6px;overflow:hidden;margin-bottom:6px}
+.prog-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--gold),var(--green));transition:width .3s}
+.prog-meta{display:flex;justify-content:space-between;font-size:12px;color:var(--text3)}
+
+/* VIDEO FORM */
+.video-form{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;margin-top:20px;display:none}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-group.full{grid-column:1/-1}
+.form-label{font-size:12px;font-weight:600;color:var(--text2);letter-spacing:.3px;text-transform:uppercase}
+.form-input{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:10px 14px;color:var(--text);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:.2s}
+.form-input:focus{border-color:var(--gold)}
+textarea.form-input{resize:vertical;min-height:80px}
+select.form-input option{background:var(--bg3)}
+.tag-input-wrap{display:flex;flex-wrap:wrap;gap:6px;background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:8px 12px;cursor:text;min-height:42px;align-items:center}
+.tag-pill{background:var(--goldfaint);border:1px solid rgba(245,166,35,0.3);color:var(--gold);border-radius:20px;padding:2px 10px;font-size:12px;font-weight:600;display:flex;align-items:center;gap:5px;cursor:pointer}
+.tag-pill:hover{background:var(--redfaint);color:var(--red);border-color:rgba(255,71,87,.3)}
+.tag-input{background:none;border:none;outline:none;color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;min-width:80px}
+.thumbnail-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px}
+.thumb-opt{aspect-ratio:16/9;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer;border:2px solid transparent;transition:.2s}
+.thumb-opt:hover{border-color:var(--gold)}
+.thumb-opt.selected{border-color:var(--gold);outline:2px solid rgba(245,166,35,.3)}
+.thumb-opt.t1{background:linear-gradient(135deg,#0F2A1E,#1A3D2B)}
+.thumb-opt.t2{background:linear-gradient(135deg,#1A1A0F,#2D2A0F)}
+.thumb-opt.t3{background:linear-gradient(135deg,#0F1A2A,#0F2035)}
+.thumb-opt.t4{background:linear-gradient(135deg,#2A0F1A,#3D1A28)}
+
+/* VIDEO LIBRARY */
+.lib-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;gap:12px;flex-wrap:wrap}
+.search-box{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:9px 14px;display:flex;align-items:center;gap:10px;flex:1;max-width:340px}
+.search-box input{background:none;border:none;outline:none;color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;width:100%}
+.search-box input::placeholder{color:var(--text3)}
+.filter-row{display:flex;gap:8px;flex-wrap:wrap}
+.filter-chip{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);color:var(--text2);background:var(--card);transition:.2s}
+.filter-chip:hover{border-color:var(--gold);color:var(--gold)}
+.filter-chip.active{background:var(--goldfaint);color:var(--gold);border-color:rgba(245,166,35,.3)}
+
+/* VIDEO TABLE */
+.video-table{width:100%;border-collapse:collapse}
+.video-table th{text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text3);padding:10px 14px;border-bottom:1px solid var(--border);background:var(--bg2)}
+.video-table td{padding:14px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle}
+.video-table tr:hover td{background:var(--bg3)}
+.video-thumb-row{width:80px;height:48px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.v-title{font-weight:600;font-size:13px;margin-bottom:3px}
+.v-meta{font-size:11px;color:var(--text3)}
+.status-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.st-pub{background:var(--greenfaint);color:var(--green);border:1px solid rgba(0,214,143,.25)}
+.st-draft{background:var(--goldfaint);color:var(--gold);border:1px solid rgba(245,166,35,.25)}
+.st-proc{background:var(--bluefaint);color:var(--blue);border:1px solid rgba(61,142,255,.25)}
+.st-dot{width:6px;height:6px;border-radius:50%;background:currentColor;display:inline-block}
+.actions{display:flex;gap:6px}
+
+/* STATS GRID */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;position:relative;overflow:hidden}
+.stat-card::after{content:attr(data-emoji);position:absolute;right:12px;top:12px;font-size:28px;opacity:.2}
+.stat-val{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;margin-bottom:4px}
+.stat-lbl{font-size:12px;color:var(--text2)}
+.stat-chg{font-size:11px;font-weight:600;margin-top:8px}
+.up{color:var(--green)}.down{color:var(--red)}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:999;padding:20px}
+.modal{background:var(--card);border:1px solid var(--border2);border-radius:20px;padding:28px;max-width:560px;width:100%;max-height:90vh;overflow-y:auto;position:relative}
+.modal-close{position:absolute;top:16px;right:16px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;color:var(--text2)}
+.modal-close:hover{color:var(--text)}
+.modal h3{font-size:18px;font-weight:700;margin-bottom:20px}
+
+/* VIDEO PREVIEW */
+.preview-player{background:var(--bg3);border-radius:12px;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;margin-bottom:20px;position:relative;overflow:hidden;cursor:pointer}
+.preview-player:hover .play-btn{transform:scale(1.08)}
+.play-btn{width:52px;height:52px;background:linear-gradient(135deg,var(--gold),#E8941A);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#0A0E1A;font-size:20px;transition:.2s}
+
+/* COURSE ASSIGN */
+.course-list{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.course-row{display:flex;align-items:center;justify-content:space-between;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px 16px}
+.course-row-left{display:flex;align-items:center;gap:10px}
+.course-emoji{font-size:20px}
+.course-row-title{font-size:13px;font-weight:500}
+.course-row-meta{font-size:11px;color:var(--text3)}
+.toggle{width:38px;height:22px;background:var(--border2);border-radius:20px;cursor:pointer;position:relative;transition:.3s;flex-shrink:0}
+.toggle.on{background:var(--green)}
+.toggle::after{content:'';position:absolute;width:16px;height:16px;background:#fff;border-radius:50%;top:3px;left:3px;transition:.3s}
+.toggle.on::after{left:19px}
+
+/* BULK BAR */
+.bulk-bar{background:var(--card2);border:1px solid var(--border2);border-radius:12px;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;display:none}
+.bulk-bar.show{display:flex}
+
+/* TOASTS */
+.toast-wrap{position:fixed;bottom:24px;right:24px;display:flex;flex-direction:column;gap:10px;z-index:9999}
+.toast{background:var(--card2);border:1px solid var(--border2);border-radius:12px;padding:12px 18px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:10px;animation:toastIn .3s ease;max-width:300px}
+@keyframes toastIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+@keyframes toastOut{from{opacity:1;transform:translateX(0)}to{opacity:0;transform:translateX(20px)}}
+.toast.removing{animation:toastOut .3s ease forwards}
+
+/* PROGRESS RINGS */
+.ring-wrap{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:24px}
+.ring-item{text-align:center}
+.ring-lbl{font-size:12px;color:var(--text2);margin-top:6px}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+
+@media(max-width:700px){
+  .sidebar{width:56px}.sidebar .logo-text,.sidebar .nav-item span,.sidebar .nav-section{display:none}
+  .sidebar .logo{padding:12px;justify-content:center}.sidebar .logo-icon{margin:0}
+  .sidebar .nav-item{justify-content:center;padding:12px}.stats-grid{grid-template-columns:1fr 1fr}
+  .form-grid{grid-template-columns:1fr}
+}
+</style>
+
+<h2 class="sr-only">TradeIQ Video Upload & Management Admin Panel</h2>
+
+<div class="shell">
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="logo">
+    <div class="logo-icon">TQ</div>
+    <div class="logo-text">Trade<span>IQ</span></div>
+  </div>
+  <div class="nav-section">Content</div>
+  <div class="nav-item active" onclick="switchPage('upload',this)"><span class="nav-icon">⬆️</span><span>Upload Video</span></div>
+  <div class="nav-item" onclick="switchPage('library',this)"><span class="nav-icon">🎬</span><span>Video Library</span></div>
+  <div class="nav-item" onclick="switchPage('courses',this)"><span class="nav-icon">📚</span><span>Courses</span></div>
+  <div class="nav-section">Analytics</div>
+  <div class="nav-item" onclick="switchPage('analytics',this)"><span class="nav-icon">📊</span><span>Analytics</span></div>
+  <div class="nav-section">Settings</div>
+  <div class="nav-item" onclick="switchPage('settings',this)"><span class="nav-icon">⚙️</span><span>Settings</span></div>
+  <div style="flex:1"></div>
+  <div class="nav-item" style="border-top:1px solid var(--border);margin-top:12px"><span class="nav-icon">👤</span><span>Admin</span></div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-title" id="topbarTitle">Upload Video</div>
+    <div class="topbar-right">
+      <div class="badge badge-gold">⚡ Pro Plan</div>
+      <button class="btn btn-gold btn-sm" onclick="switchPage('upload', document.querySelector('.nav-item'))">+ New Upload</button>
+    </div>
+  </div>
+
+  <!-- UPLOAD PAGE -->
+  <div class="page active" id="page-upload">
+    <div class="stats-grid">
+      <div class="stat-card" data-emoji="🎬"><div class="stat-lbl">Total Videos</div><div class="stat-val" style="color:var(--gold)" id="totalCount">6</div><div class="stat-chg up">↑ 2 this week</div></div>
+      <div class="stat-card" data-emoji="👁️"><div class="stat-lbl">Total Views</div><div class="stat-val" style="color:var(--green)">24.7K</div><div class="stat-chg up">↑ 8.4% this month</div></div>
+      <div class="stat-card" data-emoji="💾"><div class="stat-lbl">Storage Used</div><div class="stat-val" style="color:var(--blue)">14.2<span style="font-size:16px;color:var(--text2)">GB</span></div><div class="stat-chg" style="color:var(--text3)">of 50GB plan</div></div>
+      <div class="stat-card" data-emoji="📝"><div class="stat-lbl">Draft Videos</div><div class="stat-val" style="color:var(--red)" id="draftCount">2</div><div class="stat-chg down">Needs publishing</div></div>
+    </div>
+
+    <div class="upload-zone" id="uploadZone" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="handleDrop(event)">
+      <input type="file" accept="video/*" onchange="handleFileSelect(event)" id="fileInput">
+      <span class="upload-icon">🎥</span>
+      <div class="upload-title">Drag & drop your video here</div>
+      <div class="upload-sub">Or click anywhere in this area to browse files</div>
+      <div class="upload-formats">
+        <span class="fmt-tag">MP4</span>
+        <span class="fmt-tag">MOV</span>
+        <span class="fmt-tag">AVI</span>
+        <span class="fmt-tag">MKV</span>
+        <span class="fmt-tag">WEBM</span>
+        <span class="fmt-tag">Max 4GB</span>
+      </div>
+    </div>
+
+    <div class="upload-progress-card" id="uploadProgressCard">
+      <div class="file-info">
+        <div class="file-thumb">🎬</div>
+        <div style="flex:1">
+          <div class="file-name" id="uploadFileName">intro-forex.mp4</div>
+          <div class="file-size" id="uploadFileSize">—</div>
+        </div>
+        <div id="uploadStatus" style="font-size:12px;font-weight:600;color:var(--text3)">Preparing...</div>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+      <div class="prog-meta"><span id="progPct">0%</span><span id="progSpeed">—</span></div>
+    </div>
+
+    <div class="video-form" id="videoForm">
+      <h3 style="font-size:17px;font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:8px">
+        <span style="color:var(--green)">✓</span> Video Details
+        <span style="font-size:11px;font-weight:500;color:var(--text3);margin-left:4px">Fill in the info to publish your lesson</span>
+      </h3>
+      <div class="form-grid">
+        <div class="form-group full">
+          <div class="form-label">Lesson Title *</div>
+          <input class="form-input" type="text" placeholder="e.g. Introduction to Forex: Understanding Currency Pairs" id="vidTitle">
+        </div>
+        <div class="form-group full">
+          <div class="form-label">Description</div>
+          <textarea class="form-input" placeholder="What will students learn in this lesson?"></textarea>
+        </div>
+        <div class="form-group">
+          <div class="form-label">Course</div>
+          <select class="form-input" id="vidCourse">
+            <option value="">— Select Course —</option>
+            <option>Forex Fundamentals</option>
+            <option>Crypto for Beginners</option>
+            <option>Stock Market Essentials</option>
+            <option>Technical Analysis Mastery</option>
+            <option>DeFi & Web3 Trading</option>
+            <option>Options Trading Strategies</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <div class="form-label">Lesson Number</div>
+          <input class="form-input" type="number" placeholder="e.g. 3" min="1">
+        </div>
+        <div class="form-group">
+          <div class="form-label">Level</div>
+          <select class="form-input">
+            <option>Beginner</option>
+            <option>Intermediate</option>
+            <option>Advanced</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <div class="form-label">Status</div>
+          <select class="form-input" id="vidStatus">
+            <option>Draft</option>
+            <option>Published</option>
+            <option>Premium Only</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <div class="form-label">Tags</div>
+          <div class="tag-input-wrap" id="tagWrap" onclick="document.getElementById('tagInput').focus()">
+            <div class="tag-pill" onclick="removeTag(this,event)">Forex ×</div>
+            <div class="tag-pill" onclick="removeTag(this,event)">Beginners ×</div>
+            <input class="tag-input" id="tagInput" placeholder="Add tag..." onkeydown="addTag(event)">
+          </div>
+        </div>
+        <div class="form-group full">
+          <div class="form-label">Thumbnail</div>
+          <div style="font-size:12px;color:var(--text3);margin-bottom:8px">Select an auto-generated thumbnail or upload custom</div>
+          <div class="thumbnail-grid" id="thumbGrid">
+            <div class="thumb-opt t1 selected" onclick="selectThumb(this)">💱</div>
+            <div class="thumb-opt t2" onclick="selectThumb(this)">₿</div>
+            <div class="thumb-opt t3" onclick="selectThumb(this)">📈</div>
+            <div class="thumb-opt t4" onclick="selectThumb(this)">📊</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" style="margin-top:10px">⬆ Upload Custom Thumbnail</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:8px">
+        <button class="btn btn-gold" onclick="publishVideo()">🚀 Publish Lesson</button>
+        <button class="btn btn-ghost" onclick="saveDraft()">💾 Save as Draft</button>
+        <button class="btn btn-ghost" onclick="resetForm()" style="margin-left:auto;color:var(--red);border-color:rgba(255,71,87,.3)">✕ Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIBRARY PAGE -->
+  <div class="page" id="page-library">
+    <div class="stats-grid">
+      <div class="stat-card" data-emoji="🎬"><div class="stat-lbl">Total Videos</div><div class="stat-val" style="color:var(--gold)" id="libTotal">6</div></div>
+      <div class="stat-card" data-emoji="✅"><div class="stat-lbl">Published</div><div class="stat-val" style="color:var(--green)" id="libPub">4</div></div>
+      <div class="stat-card" data-emoji="📝"><div class="stat-lbl">Drafts</div><div class="stat-val" style="color:var(--gold)" id="libDraft">2</div></div>
+      <div class="stat-card" data-emoji="⏳"><div class="stat-lbl">Processing</div><div class="stat-val" style="color:var(--blue)" id="libProc">0</div></div>
+    </div>
+
+    <div class="lib-toolbar">
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;flex:1">
+        <div class="search-box"><span>🔍</span><input type="text" placeholder="Search videos..." id="libSearch" oninput="filterLibrary()"></div>
+        <div class="filter-row">
+          <div class="filter-chip active" onclick="setFilter(this,'all')">All</div>
+          <div class="filter-chip" onclick="setFilter(this,'Published')">Published</div>
+          <div class="filter-chip" onclick="setFilter(this,'Draft')">Drafts</div>
+          <div class="filter-chip" onclick="setFilter(this,'Processing')">Processing</div>
+        </div>
+      </div>
+      <button class="btn btn-gold btn-sm" onclick="switchPage('upload',document.querySelectorAll('.nav-item')[0])">+ Upload</button>
+    </div>
+
+    <div class="bulk-bar" id="bulkBar">
+      <div style="font-size:13px;font-weight:600"><span id="selectedCount">0</span> videos selected</div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-green btn-sm" onclick="bulkPublish()">✓ Publish All</button>
+        <button class="btn btn-red btn-sm" onclick="bulkDelete()">🗑 Delete</button>
+        <button class="btn btn-ghost btn-sm" onclick="clearSelection()">✕ Cancel</button>
+      </div>
+    </div>
+
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden">
+      <table class="video-table" id="videoTable">
+        <thead>
+          <tr>
+            <th style="width:36px"><input type="checkbox" id="selectAll" onchange="toggleAll(this)" style="cursor:pointer;accent-color:var(--gold)"></th>
+            <th>Video</th>
+            <th>Course</th>
+            <th>Duration</th>
+            <th>Status</th>
+            <th>Views</th>
+            <th>Uploaded</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="videoTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- COURSES PAGE -->
+  <div class="page" id="page-courses">
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px" id="courseCards"></div>
+  </div>
+
+  <!-- ANALYTICS PAGE -->
+  <div class="page" id="page-analytics">
+    <div class="stats-grid">
+      <div class="stat-card" data-emoji="👁️"><div class="stat-lbl">Total Views</div><div class="stat-val" style="color:var(--gold)">24.7K</div><div class="stat-chg up">↑ 8.4% vs last month</div></div>
+      <div class="stat-card" data-emoji="⏱️"><div class="stat-lbl">Watch Time</div><div class="stat-val" style="color:var(--green)">3.2K<span style="font-size:16px;color:var(--text2)">h</span></div><div class="stat-chg up">↑ 12.1%</div></div>
+      <div class="stat-card" data-emoji="✅"><div class="stat-lbl">Completion Rate</div><div class="stat-val" style="color:var(--blue)">68<span style="font-size:16px;color:var(--text2)">%</span></div><div class="stat-chg up">↑ 3.2%</div></div>
+      <div class="stat-card" data-emoji="🌟"><div class="stat-lbl">Avg Rating</div><div class="stat-val" style="color:var(--gold)">4.9</div><div class="stat-chg up">↑ 0.1 this month</div></div>
+    </div>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:20px">
+      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:15px;margin-bottom:20px">Views per Video (Last 30 Days)</div>
+      <div id="analyticsBars"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px">
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:15px;margin-bottom:16px">Top Performing Videos</div>
+        <div id="topVideos"></div>
+      </div>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px">
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:15px;margin-bottom:16px">Traffic by Category</div>
+        <div id="categoryStats"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS PAGE -->
+  <div class="page" id="page-settings">
+    <div style="max-width:600px">
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:16px">
+        <h3 style="font-size:16px;font-weight:700;margin-bottom:20px">Video Settings</h3>
+        <div class="form-group" style="margin-bottom:16px">
+          <div class="form-label">Default Video Quality</div>
+          <select class="form-input"><option>Auto (Recommended)</option><option>1080p HD</option><option>720p</option><option>480p</option></select>
+        </div>
+        <div class="form-group" style="margin-bottom:16px">
+          <div class="form-label">Default Status on Upload</div>
+          <select class="form-input"><option>Draft</option><option>Published</option></select>
+        </div>
+        <div class="form-group" style="margin-bottom:16px">
+          <div class="form-label">Watermark</div>
+          <select class="form-input"><option>TradeIQ Logo (Bottom Right)</option><option>Custom Text</option><option>None</option></select>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)">
+          <div><div style="font-size:14px;font-weight:500">Auto-generate subtitles</div><div style="font-size:12px;color:var(--text3)">AI-powered captions for every video</div></div>
+          <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)">
+          <div><div style="font-size:14px;font-weight:500">Enable comments</div><div style="font-size:12px;color:var(--text3)">Allow students to comment on lessons</div></div>
+          <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0">
+          <div><div style="font-size:14px;font-weight:500">Email on upload complete</div><div style="font-size:12px;color:var(--text3)">Get notified when processing finishes</div></div>
+          <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+        </div>
+        <button class="btn btn-gold" style="margin-top:16px" onclick="toast('Settings saved successfully!','green')">Save Settings</button>
+      </div>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px">
+        <h3 style="font-size:16px;font-weight:700;margin-bottom:16px">Storage & Hosting</h3>
+        <div style="margin-bottom:16px">
+          <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px"><span>Used: 14.2 GB</span><span style="color:var(--text3)">50 GB total</span></div>
+          <div style="background:var(--bg3);border-radius:20px;height:8px;overflow:hidden"><div style="width:28%;height:100%;background:linear-gradient(90deg,var(--gold),var(--green));border-radius:20px"></div></div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-ghost btn-sm">☁ Connect Cloudinary</button>
+          <button class="btn btn-ghost btn-sm">🗄 Connect Supabase</button>
+          <button class="btn btn-ghost btn-sm">▶ Connect Vimeo</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" style="display:none" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-close" onclick="closeModal()">✕</div>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+let videos = [
+  {id:1,title:"Introduction to Forex",course:"Forex Fundamentals",duration:"12:34",status:"Published",views:4821,date:"Jan 15",emoji:"💱",thumb:"t1",lesson:1,selected:false},
+  {id:2,title:"Understanding Currency Pairs",course:"Forex Fundamentals",duration:"18:22",status:"Published",views:3940,date:"Jan 15",emoji:"📊",thumb:"t1",lesson:2,selected:false},
+  {id:3,title:"Bitcoin & Blockchain Basics",course:"Crypto for Beginners",duration:"22:10",status:"Published",views:6210,date:"Jan 16",emoji:"₿",thumb:"t2",lesson:1,selected:false},
+  {id:4,title:"How to Read Candlesticks",course:"Technical Analysis Mastery",duration:"31:05",status:"Published",views:5102,date:"Jan 17",emoji:"🕯️",thumb:"t3",lesson:1,selected:false},
+  {id:5,title:"Risk Management Fundamentals",course:"Forex Fundamentals",duration:"25:48",status:"Draft",views:0,date:"Jan 18",emoji:"🛡️",thumb:"t1",lesson:3,selected:false},
+  {id:6,title:"DeFi Yield Farming Explained",course:"DeFi & Web3 Trading",duration:"28:33",status:"Draft",views:0,date:"Jan 19",emoji:"🔗",thumb:"t2",lesson:2,selected:false},
+];
+let currentFilter = 'all';
+let nextId = 7;
+
+const courses = [
+  {title:"Forex Fundamentals",emoji:"💱",lessons:3,color:"var(--gold)"},
+  {title:"Crypto for Beginners",emoji:"₿",lessons:1,color:"var(--green)"},
+  {title:"Technical Analysis Mastery",emoji:"📊",lessons:1,color:"var(--blue)"},
+  {title:"DeFi & Web3 Trading",emoji:"🔗",lessons:1,color:"var(--red)"},
+];
+
+function switchPage(name, navEl){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  if(navEl) navEl.classList.add('active');
+  const titles={upload:'Upload Video',library:'Video Library',courses:'Courses',analytics:'Analytics',settings:'Settings'};
+  document.getElementById('topbarTitle').textContent=titles[name]||name;
+  if(name==='library') renderTable();
+  if(name==='courses') renderCourseCards();
+  if(name==='analytics') renderAnalytics();
+}
+
+function dragOver(e){e.preventDefault();document.getElementById('uploadZone').classList.add('drag')}
+function dragLeave(){document.getElementById('uploadZone').classList.remove('drag')}
+function handleDrop(e){e.preventDefault();dragLeave();const f=e.dataTransfer.files[0];if(f)startUpload(f)}
+function handleFileSelect(e){const f=e.target.files[0];if(f)startUpload(f)}
+
+function startUpload(file){
+  const card=document.getElementById('uploadProgressCard');
+  card.style.display='block';
+  document.getElementById('uploadFileName').textContent=file.name||'video.mp4';
+  const sz=(file.size/1024/1024).toFixed(1);
+  document.getElementById('uploadFileSize').textContent=`${sz} MB`;
+  document.getElementById('uploadStatus').textContent='Uploading...';
+  document.getElementById('uploadStatus').style.color='var(--blue)';
+  let p=0;
+  const iv=setInterval(()=>{
+    p+=Math.random()*8+2;
+    if(p>=100){p=100;clearInterval(iv);uploadDone(file.name||'new-video.mp4')}
+    document.getElementById('progFill').style.width=p+'%';
+    document.getElementById('progPct').textContent=Math.round(p)+'%';
+    document.getElementById('progSpeed').textContent=p<100?(Math.random()*3+1).toFixed(1)+' MB/s':'Complete';
+  },200);
+}
+
+function uploadDone(fname){
+  document.getElementById('uploadStatus').textContent='✓ Ready';
+  document.getElementById('uploadStatus').style.color='var(--green)';
+  document.getElementById('videoForm').style.display='block';
+  const name=fname.replace(/\.[^.]+$/,'').replace(/[-_]/g,' ');
+  document.getElementById('vidTitle').value=name.charAt(0).toUpperCase()+name.slice(1);
+  toast('Video uploaded! Fill in the details below.','green');
+}
+
+function publishVideo(){
+  const title=document.getElementById('vidTitle').value||'Untitled Lesson';
+  const course=document.getElementById('vidCourse').value||'Forex Fundamentals';
+  const status=document.getElementById('vidStatus').value;
+  videos.unshift({id:nextId++,title,course,duration:'00:00',status:status==='Draft'?'Draft':'Published',views:0,date:'Today',emoji:'🎬',thumb:'t1',lesson:videos.length+1,selected:false});
+  updateCounts();
+  toast(`"${title}" published successfully! 🚀`,'gold');
+  resetForm();
+}
+
+function saveDraft(){
+  const title=document.getElementById('vidTitle').value||'Untitled Draft';
+  videos.unshift({id:nextId++,title,course:'Uncategorized',duration:'00:00',status:'Draft',views:0,date:'Today',emoji:'🎬',thumb:'t1',lesson:0,selected:false});
+  updateCounts();
+  toast(`Saved "${title}" as draft.`,'blue');
+  resetForm();
+}
+
+function resetForm(){
+  document.getElementById('uploadProgressCard').style.display='none';
+  document.getElementById('videoForm').style.display='none';
+  document.getElementById('fileInput').value='';
+  document.getElementById('progFill').style.width='0%';
+}
+
+function updateCounts(){
+  const total=videos.length;
+  const drafts=videos.filter(v=>v.status==='Draft').length;
+  const pub=videos.filter(v=>v.status==='Published').length;
+  if(document.getElementById('totalCount')) document.getElementById('totalCount').textContent=total;
+  if(document.getElementById('draftCount')) document.getElementById('draftCount').textContent=drafts;
+  if(document.getElementById('libTotal')) document.getElementById('libTotal').textContent=total;
+  if(document.getElementById('libPub')) document.getElementById('libPub').textContent=pub;
+  if(document.getElementById('libDraft')) document.getElementById('libDraft').textContent=drafts;
+}
+
+function renderTable(){
+  const search=(document.getElementById('libSearch')||{value:''}).value.toLowerCase();
+  let list=videos.filter(v=>{
+    const matchFilter=currentFilter==='all'||v.status===currentFilter;
+    const matchSearch=!search||v.title.toLowerCase().includes(search)||v.course.toLowerCase().includes(search);
+    return matchFilter&&matchSearch;
+  });
+  const tbody=document.getElementById('videoTableBody');
+  if(!tbody)return;
+  if(!list.length){tbody.innerHTML=`<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text3)">No videos found</td></tr>`;return;}
+  tbody.innerHTML=list.map(v=>`<tr>
+    <td><input type="checkbox" ${v.selected?'checked':''} onchange="toggleSelect(${v.id},this)" style="cursor:pointer;accent-color:var(--gold)"></td>
+    <td>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="video-thumb-row ${v.thumb}">${v.emoji}</div>
+        <div>
+          <div class="v-title">${v.title}</div>
+          <div class="v-meta">Lesson ${v.lesson||'—'}</div>
+        </div>
+      </div>
+    </td>
+    <td style="color:var(--text2);font-size:13px">${v.course}</td>
+    <td style="color:var(--text2);font-size:13px">${v.duration}</td>
+    <td><div class="status-badge ${v.status==='Published'?'st-pub':v.status==='Processing'?'st-proc':'st-draft'}"><span class="st-dot"></span>${v.status}</div></td>
+    <td style="color:var(--text);font-family:'Syne',sans-serif;font-weight:600">${v.views?v.views.toLocaleString():'—'}</td>
+    <td style="color:var(--text3);font-size:12px">${v.date}</td>
+    <td><div class="actions">
+      <button class="btn btn-ghost btn-sm" onclick="previewVideo(${v.id})">▶</button>
+      <button class="btn btn-blue btn-sm" onclick="editVideo(${v.id})">✏</button>
+      <button class="btn btn-red btn-sm" onclick="deleteVideo(${v.id})">🗑</button>
+    </div></td>
+  </tr>`).join('');
+  updateCounts();
+}
+
+function filterLibrary(){renderTable()}
+
+function setFilter(el,filter){
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');currentFilter=filter;renderTable();
+}
+
+function toggleSelect(id,cb){
+  const v=videos.find(v=>v.id===id);
+  if(v)v.selected=cb.checked;
+  const sel=videos.filter(v=>v.selected).length;
+  const bar=document.getElementById('bulkBar');
+  if(sel>0){bar.classList.add('show');document.getElementById('selectedCount').textContent=sel;}
+  else{bar.classList.remove('show');}
+}
+
+function toggleAll(cb){
+  videos.forEach(v=>v.selected=cb.checked);
+  renderTable();
+  const bar=document.getElementById('bulkBar');
+  const sel=videos.filter(v=>v.selected).length;
+  if(sel>0){bar.classList.add('show');document.getElementById('selectedCount').textContent=sel;}
+  else bar.classList.remove('show');
+}
+
+function clearSelection(){videos.forEach(v=>v.selected=false);document.getElementById('bulkBar').classList.remove('show');renderTable();}
+function bulkPublish(){videos.filter(v=>v.selected).forEach(v=>v.status='Published');clearSelection();toast('Selected videos published!','green')}
+function bulkDelete(){const c=videos.filter(v=>v.selected).length;videos=videos.filter(v=>!v.selected);clearSelection();toast(`${c} video(s) deleted.`,'red')}
+
+function deleteVideo(id){
+  const v=videos.find(v=>v.id===id);
+  openModal(`<h3>Delete Video</h3>
+    <p style="color:var(--text2);font-size:14px;margin-bottom:24px">Are you sure you want to delete <strong style="color:var(--text)">"${v.title}"</strong>? This cannot be undone.</p>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-red" onclick="confirmDelete(${id})">🗑 Yes, Delete</button>
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+    </div>`);
+}
+
+function confirmDelete(id){videos=videos.filter(v=>v.id!==id);closeModal();renderTable();toast('Video deleted.','red')}
+
+function previewVideo(id){
+  const v=videos.find(v=>v.id===id);
+  openModal(`<h3>${v.title}</h3>
+    <div class="preview-player"><div class="play-btn">▶</div></div>
+    <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap">
+      <span class="badge badge-gold">${v.course}</span>
+      <span style="font-size:13px;color:var(--text3)">⏱ ${v.duration}</span>
+      <span style="font-size:13px;color:var(--text3)">👁 ${v.views?v.views.toLocaleString():0} views</span>
+      <div class="status-badge ${v.status==='Published'?'st-pub':'st-draft'}"><span class="st-dot"></span>${v.status}</div>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-gold btn-sm" onclick="closeModal()">✓ Done</button>
+      <button class="btn btn-ghost btn-sm" onclick="editVideo(${id});closeModal()">✏ Edit Details</button>
+    </div>`);
+}
+
+function editVideo(id){
+  const v=videos.find(v=>v.id===id);
+  openModal(`<h3>Edit Video Details</h3>
+    <div class="form-group" style="margin-bottom:14px">
+      <div class="form-label">Title</div>
+      <input class="form-input" type="text" value="${v.title}" id="editTitle">
+    </div>
+    <div class="form-group" style="margin-bottom:14px">
+      <div class="form-label">Course</div>
+      <select class="form-input" id="editCourse">
+        ${['Forex Fundamentals','Crypto for Beginners','Stock Market Essentials','Technical Analysis Mastery','DeFi & Web3 Trading','Options Trading Strategies'].map(c=>`<option ${c===v.course?'selected':''}>${c}</option>`).join('')}
+      </select>
+    </div>
+    <div class="form-group" style="margin-bottom:14px">
+      <div class="form-label">Status</div>
+      <select class="form-input" id="editStatus">
+        ${['Published','Draft','Premium Only'].map(s=>`<option ${s===v.status?'selected':''}>${s}</option>`).join('')}
+      </select>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button class="btn btn-gold" onclick="saveEdit(${id})">💾 Save Changes</button>
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+    </div>`);
+}
+
+function saveEdit(id){
+  const v=videos.find(v=>v.id===id);
+  v.title=document.getElementById('editTitle').value;
+  v.course=document.getElementById('editCourse').value;
+  v.status=document.getElementById('editStatus').value;
+  closeModal();renderTable();toast('Video updated successfully!','gold');
+}
+
+function renderCourseCards(){
+  const el=document.getElementById('courseCards');
+  if(!el)return;
+  const courseMap={};
+  videos.forEach(v=>{
+    if(!courseMap[v.course])courseMap[v.course]={count:0,pub:0,drafts:0,views:0};
+    courseMap[v.course].count++;
+    if(v.status==='Published')courseMap[v.course].pub++;
+    else courseMap[v.course].drafts++;
+    courseMap[v.course].views+=v.views;
+  });
+  const emojis={'Forex Fundamentals':'💱','Crypto for Beginners':'₿','Stock Market Essentials':'📈','Technical Analysis Mastery':'📊','DeFi & Web3 Trading':'🔗','Options Trading Strategies':'⚙️'};
+  el.innerHTML=Object.entries(courseMap).map(([name,d])=>`
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;cursor:pointer;transition:.3s" onmouseenter="this.style.borderColor='var(--gold)'" onmouseleave="this.style.borderColor='var(--border)'">
+      <div style="font-size:36px;margin-bottom:16px">${emojis[name]||'📹'}</div>
+      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:16px;margin-bottom:12px">${name}</div>
+      <div style="display:flex;gap:16px;margin-bottom:20px">
+        <div style="text-align:center"><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:22px;color:var(--gold)">${d.count}</div><div style="font-size:11px;color:var(--text3)">Videos</div></div>
+        <div style="text-align:center"><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:22px;color:var(--green)">${d.pub}</div><div style="font-size:11px;color:var(--text3)">Published</div></div>
+        <div style="text-align:center"><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:22px;color:var(--gold)">${d.drafts}</div><div style="font-size:11px;color:var(--text3)">Drafts</div></div>
+      </div>
+      <div style="background:var(--bg3);border-radius:20px;height:5px;overflow:hidden;margin-bottom:16px"><div style="width:${d.pub/d.count*100}%;height:100%;background:linear-gradient(90deg,var(--gold),var(--green));border-radius:20px"></div></div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-blue btn-sm" style="flex:1" onclick="switchPage('library',document.querySelectorAll('.nav-item')[1])">View Videos</button>
+        <button class="btn btn-gold btn-sm" onclick="switchPage('upload',document.querySelectorAll('.nav-item')[0])">+ Add</button>
+      </div>
+    </div>`).join('');
+}
+
+function renderAnalytics(){
+  const barsEl=document.getElementById('analyticsBars');
+  if(!barsEl)return;
+  const published=videos.filter(v=>v.status==='Published'&&v.views>0);
+  const max=Math.max(...published.map(v=>v.views));
+  barsEl.innerHTML=published.map(v=>`
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+      <div style="width:200px;font-size:12px;color:var(--text2);text-overflow:ellipsis;overflow:hidden;white-space:nowrap;flex-shrink:0">${v.title}</div>
+      <div style="flex:1;background:var(--bg3);border-radius:20px;height:10px;overflow:hidden">
+        <div style="width:${v.views/max*100}%;height:100%;background:linear-gradient(90deg,var(--gold),var(--green));border-radius:20px;transition:.5s"></div>
+      </div>
+      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:var(--gold);width:56px;text-align:right">${v.views.toLocaleString()}</div>
+    </div>`).join('');
+
+  const topEl=document.getElementById('topVideos');
+  if(topEl){
+    const sorted=[...published].sort((a,b)=>b.views-a.views).slice(0,4);
+    topEl.innerHTML=sorted.map((v,i)=>`<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)">
+      <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--text3);width:20px">${i+1}</div>
+      <div style="font-size:20px">${v.emoji}</div>
+      <div style="flex:1"><div style="font-size:13px;font-weight:500">${v.title}</div><div style="font-size:11px;color:var(--text3)">${v.course}</div></div>
+      <div style="font-family:'Syne',sans-serif;font-weight:700;color:var(--gold)">${v.views.toLocaleString()}</div>
+    </div>`).join('');
+  }
+
+  const catEl=document.getElementById('categoryStats');
+  if(catEl){
+    const cats={};
+    videos.forEach(v=>{
+      const cat=v.course.split(' ')[0];
+      cats[cat]=(cats[cat]||0)+v.views;
+    });
+    const catMax=Math.max(...Object.values(cats));
+    catEl.innerHTML=Object.entries(cats).map(([c,v])=>`<div style="margin-bottom:16px">
+      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span>${c}</span><span style="font-weight:600">${v.toLocaleString()}</span></div>
+      <div style="background:var(--bg3);border-radius:20px;height:8px;overflow:hidden"><div style="width:${v/catMax*100}%;height:100%;background:linear-gradient(90deg,var(--blue),var(--green));border-radius:20px"></div></div>
+    </div>`).join('');
+  }
+}
+
+function selectThumb(el){document.querySelectorAll('.thumb-opt').forEach(t=>t.classList.remove('selected'));el.classList.add('selected')}
+
+function addTag(e){
+  if(e.key==='Enter'||e.key===','){
+    e.preventDefault();
+    const v=e.target.value.trim().replace(',','');
+    if(!v)return;
+    const pill=document.createElement('div');
+    pill.className='tag-pill';
+    pill.textContent=v+' ×';
+    pill.onclick=function(ev){removeTag(this,ev)};
+    document.getElementById('tagWrap').insertBefore(pill,e.target);
+    e.target.value='';
+  }
+}
+
+function removeTag(el,e){if(e)e.stopPropagation();el.remove()}
+
+function openModal(html){
+  document.getElementById('modalBody').innerHTML=html;
+  document.getElementById('modalOverlay').style.display='flex';
+}
+
+function closeModal(e){
+  if(e&&e.target!==document.getElementById('modalOverlay'))return;
+  document.getElementById('modalOverlay').style.display='none';
+}
+
+function toast(msg, type='gold'){
+  const w=document.getElementById('toastWrap');
+  const t=document.createElement('div');
+  t.className='toast';
+  const colors={gold:'var(--gold)',green:'var(--green)',red:'var(--red)',blue:'var(--blue)'};
+  const icons={gold:'⭐',green:'✅',red:'🗑',blue:'💾'};
+  t.innerHTML=`<span>${icons[type]||'ℹ'}</span><span style="color:${colors[type]||'var(--gold)'}">${msg}</span>`;
+  w.appendChild(t);
+  setTimeout(()=>{t.classList.add('removing');setTimeout(()=>t.remove(),300)},3000);
+}
+
+renderTable();
+</script>
